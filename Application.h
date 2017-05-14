@@ -12,9 +12,9 @@
 
 class Application: public EventDispatcher {
 public:
-	static Application * instance();
-	bool init(int, char**, Uint32 flags = SDL_INIT_VIDEO);
-	void quit(int);
+    static Application * instance();
+    bool init(int, char**, Uint32 flags = SDL_INIT_VIDEO);
+    void quit(int);
     int exec();
 protected:
     virtual void cleanup() {}

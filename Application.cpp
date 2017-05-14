@@ -8,28 +8,28 @@
 #include "Application.h"
 
 bool Application::init(int, char**, Uint32 flags) {
-	exitcode = SDL_Init(flags);
-	runned = (exitcode == 0);
-	return runned;
+    exitcode = SDL_Init(flags);
+    runned = (exitcode == 0);
+    return runned;
 }
 
 int Application::exec() {
-	SDL_Event event;
-	bool processed;
-	
-	while(runned) {
-		while(SDL_PollEvent(&event)) {
-			processed = nullptr != dispatch(&event);
-			if((event.type == SDL_QUIT) &&
-			   !processed)
-				quit(exitcode);
-		}
-		idle();
-		SDL_Delay(1);
-	}
-	cleanup();
-	SDL_Quit();
-	return exitcode;
+    SDL_Event event;
+    bool processed;
+    
+    while(runned) {
+        while(SDL_PollEvent(&event)) {
+            processed = nullptr != dispatch(&event);
+            if((event.type == SDL_QUIT) &&
+               !processed)
+                quit(exitcode);
+        }
+        idle();
+        SDL_Delay(1);
+    }
+    cleanup();
+    SDL_Quit();
+    return exitcode;
 }
 
 Application::~Application(){
@@ -37,11 +37,11 @@ Application::~Application(){
 }
 
 Application * Application::instance() {
-	static Application app;
-	return &app;
+    static Application app;
+    return &app;
 }
 
 void Application::quit(int code=0) {
-	exitcode = code;
-	runned = false;
+    exitcode = code;
+    runned = false;
 }
