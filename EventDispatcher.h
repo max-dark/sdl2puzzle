@@ -54,5 +54,5 @@ private:
     EventVector m_listeners; /// Список слушателей
 };
 
-#endif	/* EVENTPROCESSOR_H */
+#endif	/* EVENTDISPARCHER_H */
 

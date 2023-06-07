@@ -10,28 +10,29 @@
 
 #include <SDL2/SDL.h>
 /**
- * @brief Слущатель сообщений от диспетчера
+ * @brief Слушатель сообщений от диспетчера
  */
 class IEventListener {
 public:
     /**
      * @brief Обработка сообщения
-     * @param Сообщение
+     * @param event Сообщение
      * @return true - если сообщение обработано false если его над послать дальше
      */
-    virtual bool processEvent(const SDL_Event*) = 0;
+    virtual bool processEvent(const SDL_Event* event) = 0;
 
-    virtual void processIdle(void);
+    virtual void processIdle();
 
     IEventListener();
     virtual ~IEventListener();
 
-    Uint32 id(); /// получить индификатор
-    Uint32 id(Uint32 ID); /// Установить идификатор, вернуть старый
+    [[nodiscard]]
+    Uint32 id() const; /// получить идентификатор
+    Uint32 id(Uint32 ID); /// Установить идентификатор, вернуть старый
 private:
     Uint32 mID;
     static Uint32 sID;
 };
 
-#endif	/* IBASEEVENT_H */
+#endif	/* IEVENTLISTENER_H */
 

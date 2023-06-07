@@ -5,17 +5,17 @@
 #include <random>
 #include <iostream>
 #include "Application.h"
-#include "Window.h"
+#include "GameWindow.h"
 #include <SDL2/SDL_image.h>
 
 
-Window::~Window() {
+GameWindow::~GameWindow() {
     SDL_FreeSurface(img);
     SDL_DestroyTexture(tex);
 }
 
-Window::Window(const char* title) : SimpleWindow(title, sQuadre * size, sQuadre * size),
-                                    rnd() {
+GameWindow::GameWindow(const char* title) : SimpleWindow(title, kCellSize * kNumCells, kCellSize * kNumCells),
+                                            rnd() {
     initTexture();
     initRects();
     randomize();
@@ -23,7 +23,7 @@ Window::Window(const char* title) : SimpleWindow(title, sQuadre * size, sQuadre 
     show();
 }
 
-int Window::Message(const char * title,const char * message, Uint32 flags = SDL_MESSAGEBOX_INFORMATION) {
+int GameWindow::Message(const char * title, const char * message, Uint32 flags = SDL_MESSAGEBOX_INFORMATION) {
     return SDL_ShowSimpleMessageBox(
         flags,
         title,
@@ -32,8 +32,8 @@ int Window::Message(const char * title,const char * message, Uint32 flags = SDL_
     );
 }
 
-void Window::initTexture() {
-    const char tex_file[] = "./numbs.bmp";
+void GameWindow::initTexture() {
+    const char tex_file[] = "./cells.bmp";
 
     img = SDL_LoadBMP(tex_file);
     if(!img) {
@@ -45,84 +45,84 @@ void Window::initTexture() {
     //tex = SDL_CreateTextureFromSurface(render(), img);
     tex = IMG_LoadTexture(render(), tex_file);
 }
-void Window::initRects() {
-    for(int i=1; i<size*size; ++i) {
-        rnum[i-1].h = sQuadre;
-        rnum[i-1].w = sQuadre;
-        rnum[i-1].x = (i%size)*sQuadre;
-        rnum[i-1].y = (i/size)*sQuadre;
+void GameWindow::initRects() {
+    for(uint8_t i=1; i < kNumCells * kNumCells; ++i) {
+        positions[i - 1].h = kCellSize;
+        positions[i - 1].w = kCellSize;
+        positions[i - 1].x = (i % kNumCells) * kCellSize;
+        positions[i - 1].y = (i / kNumCells) * kCellSize;
     }
-    rnum[15].h = sQuadre;
-    rnum[15].w = sQuadre;
-    rnum[15].x = 0;
-    rnum[15].y = 0;
+    positions[15].h = kCellSize;
+    positions[15].w = kCellSize;
+    positions[15].x = 0;
+    positions[15].y = 0;
 }
 
-void Window::randomize() {
-    int i, j;
+void GameWindow::randomize() {
+    size_t i, j;
     int num = 0;
 
-    for (i=0; i<size; ++i)
-        for (j=0; j<size; ++j)
-            numbs[i][j]=-1;
+    for (i=0; i < kNumCells; ++i)
+        for (j=0; j < kNumCells; ++j)
+            cells[i][j]=-1;
     do {
-        i = rnd() % size;
-        j = rnd() % size;
-        if(numbs[i][j] == -1) {
-            numbs[i][j]=num;
+        i = rnd() % kNumCells;
+        j = rnd() % kNumCells;
+        if(cells[i][j] == -1) {
+            cells[i][j]=num;
             ++num;
         }
     }
     while(num<16);
 }
 
-void Window::move(int x, int y) {
-    if(numbs[x][y] == empty)
+void GameWindow::move(int x, int y) {
+    if(cells[x][y] == kEmptyCellId)
         return;
     for(int i = x-1; i<=x+1; ++i) {
         if(i<0) continue;
-        if(i>=size) continue;
+        if(i >= kNumCells) continue;
         for(int j = y-1; j<=y+1; ++j) {
             if(j<0) continue;
-            if(j>=size) continue;
+            if(j >= kNumCells) continue;
             if(abs(x-i) == abs(y-j)) continue;
-            if(numbs[i][j] == empty) {
-                numbs[i][j] = numbs[x][y];
-                numbs[x][y] = empty;
+            if(cells[i][j] == kEmptyCellId) {
+                cells[i][j] = cells[x][y];
+                cells[x][y] = kEmptyCellId;
                 return;
             }
         }
     }
 }
 
-bool Window::game() {
+bool GameWindow::game() {
     int num = 0;
     int i,j;
-    for (i=0; i<size; ++i)
-        for (j=0; j<size; ++j) {
-            if(numbs[i][j]!=num)
+    for (i=0; i < kNumCells; ++i)
+        for (j=0; j < kNumCells; ++j) {
+            if(cells[i][j] != num)
                 return true;
             ++num;
         }
     return false;
 }
 
-void Window::draw() {
-    SDL_Rect rc = {0, 0, sQuadre, sQuadre};
+void GameWindow::draw() {
+    SDL_Rect rc = {0, 0, kCellSize, kCellSize};
     SDL_SetRenderDrawColor(render(), 255, 255, 255, 255);
     SDL_RenderClear(render());
 
-    for(int i=0; i<size; ++i) {
-        rc.x = sQuadre*i;
-        for(int j=0; j<size; ++j) {
-            rc.y = sQuadre*j;
-            SDL_RenderCopy(render(),tex, &rnum[numbs[i][j]], &rc);
+    for(int i=0; i < kNumCells; ++i) {
+        rc.x = kCellSize * i;
+        for(int j=0; j < kNumCells; ++j) {
+            rc.y = kCellSize * j;
+            SDL_RenderCopy(render(), tex, &positions[cells[i][j]], &rc);
         }
     }
     SDL_RenderPresent(render());
 }
 
-bool Window::processEvent(const SDL_Event* event) {
+bool GameWindow::processEvent(const SDL_Event* event) {
     bool result = false;
 
     switch(event->type) {
@@ -157,7 +157,7 @@ bool Window::processEvent(const SDL_Event* event) {
             if(windowID() == event->button.windowID)
             if(event->button.button == SDL_BUTTON_LEFT) {
                 if(game()) {
-                    move(event->button.x/sQuadre, event->button.y/sQuadre);
+                    move(event->button.x / kCellSize, event->button.y / kCellSize);
                     draw();
                     if(!game())
                         Message("Done",

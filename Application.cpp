@@ -9,15 +9,15 @@
 
 bool Application::init(int, char**, Uint32 flags) {
     exitcode = SDL_Init(flags);
-    runned = (exitcode == 0);
-    return runned;
+    running = (exitcode == 0);
+    return running;
 }
 
 int Application::exec() {
     SDL_Event event;
     bool processed;
     
-    while(runned) {
+    while(running) {
         while(SDL_PollEvent(&event)) {
             processed = nullptr != dispatch(&event);
             if((event.type == SDL_QUIT) &&
@@ -43,5 +43,5 @@ Application * Application::instance() {
 
 void Application::quit(int code=0) {
     exitcode = code;
-    runned = false;
+    running = false;
 }

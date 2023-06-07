@@ -7,32 +7,26 @@
 
 #include "SimpleWindow.h"
 
-SimpleWindow::SimpleWindow() {
-    createWindow("Simple Window",
+SimpleWindow::SimpleWindow():SimpleWindow("Simple GameWindow",
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
-            640, 480,0);
-}
+            640, 480,0) {}
 
-SimpleWindow::SimpleWindow(const char* title, Uint32 flags) {
-    createWindow(title,
+SimpleWindow::SimpleWindow(const char* title, Uint32 flags):SimpleWindow(title,
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
-            640, 480, flags);
-}
+            640, 480, flags) {}
 
 SimpleWindow::SimpleWindow(const char *title,
-                 int width, int height, Uint32 flags) {
-    createWindow(title,
+                 int width, int height, Uint32 flags):SimpleWindow(title,
             SDL_WINDOWPOS_UNDEFINED,
             SDL_WINDOWPOS_UNDEFINED,
-            height, width, flags);
-}
+            width, height, flags) {}
 
 SimpleWindow::SimpleWindow(const char *title,
         int x, int y, int width, int height, Uint32 flags) {
     createWindow(title,
-            x, y, height, width, flags);
+            x, y, width, height, flags);
 }
 
 SimpleWindow::~SimpleWindow() {
@@ -66,4 +60,4 @@ void SimpleWindow::show() { SDL_ShowWindow(m_window); }
 
 void SimpleWindow::hide() { SDL_HideWindow(m_window); }
 
-Uint32 SimpleWindow::windowID() { return m_wID; }
+Uint32 SimpleWindow::windowID() const { return m_wID; }

@@ -19,11 +19,11 @@ public:
 protected:
     virtual void cleanup() {}
 private:
-    bool runned;
+    bool running;
     int  exitcode;
-    Application():runned(false),
-        exitcode(0) {}
-    virtual ~Application();
+    Application(): running(false),
+                   exitcode(0) {}
+    ~Application() override;
 };
 
 #endif	/* APPLICATION_H */
