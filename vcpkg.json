@@ -1,0 +1,12 @@
+{
+  "name": "sdl2puzzle",
+  "version-semver": "0.0.1",
+  "dependencies": [
+    {
+      "name": "sdl2"
+    },
+    {
+      "name": "sdl2-image"
+    }
+  ]
+}
